@@ -3,6 +3,7 @@
 #include "list.h"
 #include "methods.h"
 #include "search.h"
+#include "bilets.h"
 
 using namespace std;
 void removeAll(List list){
@@ -10,6 +11,7 @@ void removeAll(List list){
 			list.remove(i);
 		}
 }
+
 
 int main(int arg, char **args) {
     setlocale(LC_ALL, "rus");
@@ -21,37 +23,37 @@ int main(int arg, char **args) {
 		cout << "Аргументы не введены" << endl;
 		return 1;
 	}
-    int day;
-    string month;
-    int price;
-    string first_place;
-    string second_place;
 	
     string filename = args[1];
     
     List list;
-    list.File_in_List (filename);
-    do {
-        printMenu();
 
-       variant = getVariant(6);	
+	ifstream ifs(filename);
+    if(ifs.fail()){
+            cout <<"Файл не обнаружен. Будет создан файл с указанным именем";
+            ofstream ofs;
+            ofs.open(filename);
+            ofs.close();
+			ifs.close();
+	}else{
+    	ifs >> list;
+		ifs.close();
+	}
+	Bilet* temp;
+	do {
+        printMenu();
+		
+		variant = getVariant(7);
+
         switch (variant) {
             case 1:
-		    cout << "Введите день вылета: ";
-		    day = getVariant(31);
-		    cout << "Введите месяц вылета: ";
-		    cin >>("%s",month); 
-    		cout << "Введите цену билета: ";
-    		price = getVariant();
-    		cout << "Введите место отправления: ";
-    		cin >> first_place;
-    		cout << "Введите место прибытия: ";
-    		cin >> second_place;
-		    list.add(day,month,price,first_place,second_place);
-                break;
-            case 2:
-        	 list.add();
-                break;
+			temp = new Bilet;
+			cin >> *temp;
+			list.add(temp);
+			break;
+        	case 2:
+        	 cout << list;
+            break;
             case 3:
         cout << "Введите номер элемента, который хотите удалить"<<endl;
         int n;
@@ -64,6 +66,12 @@ int main(int arg, char **args) {
             cin >> a;
             list.changed(a-1);
 		break;
+		case 6:
+			int num;
+			cout << " Введите номер авиабилета, который хотите вывести" << endl;
+			cin >> num;
+			list.printOne(num-1);
+			break;
 	    case 4:
 		int day1;
 	    string month1;
@@ -75,7 +83,7 @@ int main(int arg, char **args) {
 		cout << "3.Поиск по цене" << endl;
 		cout << "4.Поиск по месту отправления" << endl;
 		cout << "5.Поиск по месту прибытия" << endl;
-		cout << ">";
+		cout << ">"; 
 		int varik = getVariant(5);
 		switch(varik){
 		case 1:
@@ -103,15 +111,16 @@ int main(int arg, char **args) {
 			cin >> second_place1;
 			list.search(0,"",0,"",second_place1);
 			break;
+		}
         break;
-    }
-        
-        }
-     } while (variant != 6);
-    list.File_out_List(filename);
-	//Чтобы порядок элементов в списке при следующем запуске сохранился
-	list.removeAll();
-	list.File_in_List(filename);
-	list.File_out_List(filename);
+		}
+     } while (variant != 7);
+
+	ofstream ofss;
+	ofss.open(filename);
+
+    ofss << list;
+	ofss.close();
+
     return 0;
 }

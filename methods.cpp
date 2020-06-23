@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include "bilets.h"
 #include "list.h"
 #include "methods.h"
 
@@ -17,28 +18,16 @@ int getVariant(int count) {
     return variant;
 }
 
-int getVariant() { 
-    string answer; // строка для чтения
-    int n; // итоговое целое число
-
-    cin >> answer;
-    // пока не будет считано целое число
-    while (sscanf(answer.c_str(), "%d", &n) != 1) {
-        cout << ("Неправильно введено число. Повторите попытку: "); // выводим сообщение об ошибке
-        cin >>answer; // и заново считываем строку
-    }
-
-    return n; // возвращаем корректное целое число
-}
 
 
 void printMenu() {
     cout << "Что вы хотите?" << endl;
     cout << "1. Добавить авиабилет в список" << endl;
     cout << "2. Вывести список авиабилетов" << endl;
-    cout << "3. Удалить выбранный авиабилет" << endl;
+    cout << "3. Удалить авиабилет" << endl;
     cout << "4. Поиск" << endl;
     cout << "5. Изменить авиабилет" << endl;
-    cout << "6. Выход" << endl;
+    cout << "6. Вывести один авиабилет" << endl;
+    cout << "7. Выход" << endl;
     cout << ">";
 }

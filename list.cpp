@@ -1,6 +1,7 @@
 #include "list.h"
 #include <fstream>
 #include "methods.h"
+#include "bilets.h"
 using namespace std;
 
 List::List() {
@@ -19,8 +20,8 @@ List::~List() {
 int List::size() {
     return _size;
 }
+    
 
-// Перегрузка методов вывода и ввода 
 void List::add(int day,string month, int price, string first_place, string second_place) {
     Bilet *temp = new Bilet(day, month,  price, first_place, second_place);
     temp->setNext(head);
@@ -28,27 +29,21 @@ void List::add(int day,string month, int price, string first_place, string secon
     _size++;
 }
 
-void List::add(){
+void List::print(){
     setlocale(LC_ALL, "rus");
     Bilet *temp = head;
     int i = 1;
     if(temp == NULL){
         cout << "Билетов не найдено";
     }else
-    {
+    { 
     while(temp != 0){
-      cout << " Билет№" << i;
-      cout << " День вылета: " << temp ->GetDay(); 
-      cout << " |Месяц вылета: " + temp -> GetMonth();
-      cout << " |Цена: " << temp -> GetPrice(); 
-      cout << " |Место отправления: " + temp -> GetFirst();
-      cout << " |Место прибытия: " + temp -> GetSecond() << endl;
+      cout << temp;  
       temp = temp -> next();
       i++;
-    }
+        }
     }
 }
-
 
 void List::remove(int n) {
     Bilet *temp = head;
@@ -72,19 +67,27 @@ void List::remove(int n) {
     delete delEl;
   }
 }
-
-void List::removeAll(){
+void List::printOne(int n) {
     Bilet *temp = head;
-    while(temp->next() != NULL){
-        Bilet *del = temp->next();
-        temp->setNext(del -> next());
-        _size --;
-        delete del;
-    }
-    Bilet* newHead = head->next();
-     delete head;
-     head = newHead;
-     _size--;
+     if (n == 0)
+  {
+    cout << "День: " << temp -> GetDay() << endl;
+	cout << "Месяц: " << temp -> GetMonth() << endl;
+    cout << "Цена: " << temp -> GetPrice() << endl;
+    cout << "Место отбытия:" << temp -> GetFirst() << endl;
+	cout << "Место прибытия: " << temp -> GetSecond() << endl;
+    }else{
+    for (int i = 0; i < n - 1; i++)
+         temp = temp->next();
+
+    Bilet * bilet = temp->next();
+    cout << "День: " << bilet ->GetDay() << endl;
+	cout << "Месяц: " << bilet ->GetMonth() << endl;
+    cout << "Цена: " << bilet->GetPrice() << endl;
+    cout << "Место отбытия:" << bilet->GetFirst() << endl;
+	cout << "Место прибытия: " << bilet->GetSecond() << endl;
+    
+  }
 }
 
 
@@ -184,11 +187,11 @@ void List::search(int day,string month, int price, string first_place, string se
         for (int i = 0; i < n ; i++)
             temp = temp->next();
 		    cout << "Введите новый день вылета: ";
-		    day = getVariant(31);
+		    cin >> day;
 		    cout << "Введите новый месяц вылета: ";
 		    cin >> month; 
     		cout << "Введите новую цену билета: ";
-    		price = getVariant();
+    		cin >> price;
     		cout << "Введите новое место отправления: ";
     		cin >> first_place;
     		cout << "Введите новое место прибытия: ";
@@ -198,4 +201,50 @@ void List::search(int day,string month, int price, string first_place, string se
         temp -> setPrice(price);
         temp -> setFirst(first_place);
         temp -> setSecond(second_place);
-        }    
+        }  
+
+ void List::popHead(){
+	Bilet* temp = head->next();
+	delete head;
+	head = temp;
+	_size--;
+}
+void List::add(Bilet* temp){
+	temp->setNext(head);
+	head = temp;
+	_size++;
+}
+ 
+ostream& operator<< (ostream &out, List &list){
+	Bilet* temp = list.head;
+    if(list.size() == 0){
+            cout << "Билетов не найдено"<<endl;
+    }else{
+	for(int i = 0; i < list.size(); i++){
+		out << "Номер авиабилета: " << i+1 << endl;
+		out << *temp;
+		out << endl;
+		temp = temp->next();
+	}
+    }
+	return out;
+}
+ofstream& operator<< (ofstream &fout, List &list){
+	Bilet* temp = list.head;
+	while(temp != NULL){
+		fout << *temp;
+		temp = temp->next();
+    }
+	return fout;
+}
+ifstream& operator>> (ifstream &fin, List &list){
+	
+	do{
+		Bilet* temp = new Bilet;
+		fin >> *temp;
+		list.add(temp);
+
+	} while(!fin.eof());
+	list.popHead();
+	return fin;
+}

@@ -1,3 +1,3 @@
-int getVariant(int count);
-int getVariant();
+
 void printMenu();
+int getVariant(int count);
